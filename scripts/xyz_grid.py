@@ -42,6 +42,18 @@ def apply_prompt(p, x, xs):
     p.prompt = p.prompt.replace(xs[0], x)
     p.negative_prompt = p.negative_prompt.replace(xs[0], x)
 
+def float_to_str(value):
+    return str(int(value)) if value.is_integer() else '{:.{prec}f}'.format(value, prec=len(str(value).split('.')[1]))
+
+
+def apply_prompt_range(p, x, xs):
+    print(f"DEBUG: xs: {xs}, x:{x}")
+    old, new = float_to_str(xs[0]), float_to_str(x)
+    if old not in p.prompt and old not in p.negative_prompt:
+        raise RuntimeError(f"Prompt S/R did not find {xs[0]} in prompt or negative prompt.")
+    p.prompt = p.prompt.replace(old, new)
+    p.negative_prompt = p.negative_prompt.replace(old, new)
+    print(f"DEBUG: propmt: {p.prompt}")
 
 def apply_order(p, x, xs):
     token_order = []
@@ -208,6 +220,7 @@ axis_options = [
     AxisOption("CFG Scale", float, apply_field("cfg_scale")),
     AxisOptionImg2Img("Image CFG Scale", float, apply_field("image_cfg_scale")),
     AxisOption("Prompt S/R", str, apply_prompt, format_value=format_value),
+    AxisOption("Prompt S/R range", float, apply_prompt_range),
     AxisOption("Prompt order", str_permutations, apply_order, format_value=format_value_join_list),
     AxisOptionTxt2Img("Sampler", str, apply_sampler, format_value=format_value, confirm=confirm_samplers, choices=lambda: [x.name for x in sd_samplers.samplers]),
     AxisOptionImg2Img("Sampler", str, apply_sampler, format_value=format_value, confirm=confirm_samplers, choices=lambda: [x.name for x in sd_samplers.samplers_for_img2img]),
