@@ -1,161 +1,40 @@
-# Stable Diffusion web UI
-A browser interface based on Gradio library for Stable Diffusion.
+# 这是一个不靠谱的开发用repo | Experimental development Repository
+这里是开发用repo，请不要直接克隆使用。安装使用方法在页面下方。X/Y/Z Plot的改动是我在午间凑合来的简单实现，如果对该功能有大量需求，我会完善代码并尝试开PR合并回主分支。使用中有任何问题请及时反馈以便我改进，谢谢！
 
-![](screenshot.png)
+This is a development repository, deploying it locally is not advised. The changes I made to X/Y/Z plot script was scrapped together during lunch break, I'll refine the implementation and open a PR (hopefully a1111 will be around to approve then) if people find this feature useful. Please open issues if you have any trouble using it, thanks!
 
 ## Features
-[Detailed feature showcase with images](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features):
-- Original txt2img and img2img modes
-- One click install and run script (but you still must install python and git)
-- Outpainting
-- Inpainting
-- Color Sketch
-- Prompt Matrix
-- Stable Diffusion Upscale
-- Attention, specify parts of text that the model should pay more attention to
-    - a man in a `((tuxedo))` - will pay more attention to tuxedo
-    - a man in a `(tuxedo:1.21)` - alternative syntax
-    - select text and press `Ctrl+Up` or `Ctrl+Down` to automatically adjust attention to selected text (code contributed by anonymous user)
-- Loopback, run img2img processing multiple times
-- X/Y/Z plot, a way to draw a 3 dimensional plot of images with different parameters
-- Textual Inversion
-    - have as many embeddings as you want and use any names you like for them
-    - use multiple embeddings with different numbers of vectors per token
-    - works with half precision floating point numbers
-    - train embeddings on 8GB (also reports of 6GB working)
-- Extras tab with:
-    - GFPGAN, neural network that fixes faces
-    - CodeFormer, face restoration tool as an alternative to GFPGAN
-    - RealESRGAN, neural network upscaler
-    - ESRGAN, neural network upscaler with a lot of third party models
-    - SwinIR and Swin2SR ([see here](https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/2092)), neural network upscalers
-    - LDSR, Latent diffusion super resolution upscaling
-- Resizing aspect ratio options
-- Sampling method selection
-    - Adjust sampler eta values (noise multiplier)
-    - More advanced noise setting options
-- Interrupt processing at any time
-- 4GB video card support (also reports of 2GB working)
-- Correct seeds for batches
-- Live prompt token length validation
-- Generation parameters
-     - parameters you used to generate images are saved with that image
-     - in PNG chunks for PNG, in EXIF for JPEG
-     - can drag the image to PNG info tab to restore generation parameters and automatically copy them into UI
-     - can be disabled in settings
-     - drag and drop an image/text-parameters to promptbox
-- Read Generation Parameters Button, loads parameters in promptbox to UI
-- Settings page
-- Running arbitrary python code from UI (must run with `--allow-code` to enable)
-- Mouseover hints for most UI elements
-- Possible to change defaults/mix/max/step values for UI elements via text config
-- Tiling support, a checkbox to create images that can be tiled like textures
-- Progress bar and live image generation preview
-    - Can use a separate neural network to produce previews with almost none VRAM or compute requirement
-- Negative prompt, an extra text field that allows you to list what you don't want to see in generated image
-- Styles, a way to save part of prompt and easily apply them via dropdown later
-- Variations, a way to generate same image but with tiny differences
-- Seed resizing, a way to generate same image but at slightly different resolution
-- CLIP interrogator, a button that tries to guess prompt from an image
-- Prompt Editing, a way to change prompt mid-generation, say to start making a watermelon and switch to anime girl midway
-- Batch Processing, process a group of files using img2img
-- Img2img Alternative, reverse Euler method of cross attention control
-- Highres Fix, a convenience option to produce high resolution pictures in one click without usual distortions
-- Reloading checkpoints on the fly
-- Checkpoint Merger, a tab that allows you to merge up to 3 checkpoints into one
-- [Custom scripts](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Scripts) with many extensions from community
-- [Composable-Diffusion](https://energy-based-model.github.io/Compositional-Visual-Generation-with-Composable-Diffusion-Models/), a way to use multiple prompts at once
-     - separate prompts using uppercase `AND`
-     - also supports weights for prompts: `a cat :1.2 AND a dog AND a penguin :2.2`
-- No token limit for prompts (original stable diffusion lets you use up to 75 tokens)
-- DeepDanbooru integration, creates danbooru style tags for anime prompts
-- [xformers](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Xformers), major speed increase for select cards: (add `--xformers` to commandline args)
-- via extension: [History tab](https://github.com/yfszzx/stable-diffusion-webui-images-browser): view, direct and delete images conveniently within the UI
-- Generate forever option
-- Training tab
-     - hypernetworks and embeddings options
-     - Preprocessing images: cropping, mirroring, autotagging using BLIP or deepdanbooru (for anime)
-- Clip skip
-- Hypernetworks
-- Loras (same as Hypernetworks but more pretty)
-- A sparate UI where you can choose, with preview, which embeddings, hypernetworks or Loras to add to your prompt 
-- Can select to load a different VAE from settings screen
-- Estimated completion time in progress bar
-- API
-- Support for dedicated [inpainting model](https://github.com/runwayml/stable-diffusion#inpainting-with-stable-diffusion) by RunwayML
-- via extension: [Aesthetic Gradients](https://github.com/AUTOMATIC1111/stable-diffusion-webui-aesthetic-gradients), a way to generate images with a specific aesthetic by using clip images embeds (implementation of [https://github.com/vicgalle/stable-diffusion-aesthetic-gradients](https://github.com/vicgalle/stable-diffusion-aesthetic-gradients))
-- [Stable Diffusion 2.0](https://github.com/Stability-AI/stablediffusion) support - see [wiki](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features#stable-diffusion-20) for instructions
-- [Alt-Diffusion](https://arxiv.org/abs/2211.06679) support - see [wiki](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features#alt-diffusion) for instructions
-- Now without any bad letters!
-- Load checkpoints in safetensors format
-- Eased resolution restriction: generated image's domension must be a multiple of 8 rather than 64
-- Now with a license!
-- Reorder elements in the UI from settings screen
+在X/Y/Z Plot脚本的提示词查找替换功能中，增加了指定整数、小数范围的功能。 Added range support for Prompt S/R in X/Y/Z plot script when applying against integer and float numbers.
 
-## Installation and Running
-Make sure the required [dependencies](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies) are met and follow the instructions available for both [NVidia](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-NVidia-GPUs) (recommended) and [AMD](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) GPUs.
+该功能允许在提示词查找替换功能的基础上使用整数或小数的范围写法。在测试lora、权重等场景下不需要再将所有替换值一一列出了。
 
-Alternatively, use online services (like Google Colab):
+- 简单范围：
+    - `1-5 = 1, 2, 3, 4, 5`
+- 用圆括号指定步长：
+    - `1-5 (+2) = 1, 3, 5`
+    - `10-5 (-3) = 10, 7`
+    - `1-3 (+0.5) = 1, 1.5, 2, 2.5, 3`
+- 用方括号指定采样数量
+    - `1-10 [5] = 1, 3, 5, 7, 10`
+    - `0.0-1.0 [6] = 0.0, 0.2, 0.4, 0.6, 0.8, 1.0`
 
-- [List of Online Services](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Online-Services)
+比如，在X/Y/Z Plot脚本下拉菜单中选中`Prompt S/R Range`并输入`100-500 (+100)`，对于提示词`full body of a woman in white t-shirt and tight jeans, hands in pocket, model shot poses, in the style of pencil-draw-100` 将生成如下结果
+![](prompt-sr-range.png)
 
-### Automatic Installation on Windows
-1. Install [Python 3.10.6](https://www.python.org/downloads/windows/), checking "Add Python to PATH".
-2. Install [git](https://git-scm.com/download/win).
-3. Download the stable-diffusion-webui repository, for example by running `git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git`.
-4. Run `webui-user.bat` from Windows Explorer as normal, non-administrator, user.
-
-### Automatic Installation on Linux
-1. Install the dependencies:
+## 安装方法 | Installation
+### X/Y/Z Plot
+- 打开本页面`scripts`目录下的`xyz_grid.py`文件，或者点击[此链接](https://raw.githubusercontent.com/AI-skimos/stable-diffusion-webui/master/scripts/xyz_grid.py)，将代码内容拷贝并替换你的webui本地目录中的相应文件即可。Open `xyz_grid.py` under `scripts` directory from this repo, and replace your local file with its content.
+- 熟练git使用方法的用户可增加本repo为新的remote并checkout。Alternatively, add this repo as a new remote and checkout.
+#### 回滚 | Reset
+- 目前改动并没有合并，你在下次尝试升级`automatic1111 webui`时会报冲突错误。如果你并不想继续使用本功能了，请在你本地的webui安装目录运行以下命令。You'll most likely get conflicts the next time your try to update your `automatic1111 webui` because of the unmerged changes. If you don't want to use this custom feature anymore, please run the following command line in your local installation folder. 
 ```bash
-# Debian-based:
-sudo apt install wget git python3 python3-venv
-# Red Hat-based:
-sudo dnf install wget git python3
-# Arch-based:
-sudo pacman -S wget git python3
+git reset --hard
 ```
-2. To install in `/home/$(whoami)/stable-diffusion-webui/`, run:
-```bash
-bash <(wget -qO- https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh)
-```
-3. Run `webui.sh`.
-### Installation on Apple Silicon
+## 已知问题 | Known Issue
+- 当提示词中有多个查找结果时，会同时替换所有满足查找条件的文本。这并不是本改动造成的，请确保提示词中只有一处查找结果。In case of multiple hits, all instances will be replaced. This is not an issue introduced by this custom feature. Please make sure there's only one hit for the searching criteria in your prompt.
+- 目前仅支持整数、小数的查找替换。比如0001-0003会被解析为1-3。Currently only integers and floats are supported, e.g. 0001-0003 will be parsed as 1-3. 
 
-Find the instructions [here](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Installation-on-Apple-Silicon).
+## Credit
+Thanks to `Florency(罐罐罐罐罐)` for the idea.
 
-## Contributing
-Here's how to add code to this repo: [Contributing](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Contributing)
-
-## Documentation
-The documentation was moved from this README over to the project's [wiki](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki).
-
-## Credits
-Licenses for borrowed code can be found in `Settings -> Licenses` screen, and also in `html/licenses.html` file.
-
-- Stable Diffusion - https://github.com/CompVis/stable-diffusion, https://github.com/CompVis/taming-transformers
-- k-diffusion - https://github.com/crowsonkb/k-diffusion.git
-- GFPGAN - https://github.com/TencentARC/GFPGAN.git
-- CodeFormer - https://github.com/sczhou/CodeFormer
-- ESRGAN - https://github.com/xinntao/ESRGAN
-- SwinIR - https://github.com/JingyunLiang/SwinIR
-- Swin2SR - https://github.com/mv-lab/swin2sr
-- LDSR - https://github.com/Hafiidz/latent-diffusion
-- MiDaS - https://github.com/isl-org/MiDaS
-- Ideas for optimizations - https://github.com/basujindal/stable-diffusion
-- Cross Attention layer optimization - Doggettx - https://github.com/Doggettx/stable-diffusion, original idea for prompt editing.
-- Cross Attention layer optimization - InvokeAI, lstein - https://github.com/invoke-ai/InvokeAI (originally http://github.com/lstein/stable-diffusion)
-- Sub-quadratic Cross Attention layer optimization - Alex Birch (https://github.com/Birch-san/diffusers/pull/1), Amin Rezaei (https://github.com/AminRezaei0x443/memory-efficient-attention)
-- Textual Inversion - Rinon Gal - https://github.com/rinongal/textual_inversion (we're not using his code, but we are using his ideas).
-- Idea for SD upscale - https://github.com/jquesnelle/txt2imghd
-- Noise generation for outpainting mk2 - https://github.com/parlance-zz/g-diffuser-bot
-- CLIP interrogator idea and borrowing some code - https://github.com/pharmapsychotic/clip-interrogator
-- Idea for Composable Diffusion - https://github.com/energy-based-model/Compositional-Visual-Generation-with-Composable-Diffusion-Models-PyTorch
-- xformers - https://github.com/facebookresearch/xformers
-- DeepDanbooru - interrogator for anime diffusers https://github.com/KichangKim/DeepDanbooru
-- Sampling in float32 precision from a float16 UNet - marunine for the idea, Birch-san for the example Diffusers implementation (https://github.com/Birch-san/diffusers-play/tree/92feee6)
-- Instruct pix2pix - Tim Brooks (star), Aleksander Holynski (star), Alexei A. Efros (no star) - https://github.com/timothybrooks/instruct-pix2pix
-- Security advice - RyotaK
-- UniPC sampler - Wenliang Zhao - https://github.com/wl-zhao/UniPC
-- Initial Gradio script - posted on 4chan by an Anonymous user. Thank you Anonymous user.
-- (You)
+Illustration credit to `codelsy`'s colored pencil drawing dataset.
